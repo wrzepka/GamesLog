@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Join to our community{% endblock %}
+{% block content %}
+    <form action="/register" method="post" class="m-5" style="max-width:400px; width:100%;">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" aria-describedby="passwordTip">
+            <div id="passwordTip" class="form-text">
+                Your password must be 8–20 characters long, contain at least one uppercase letter and at least one number, and must not contain special characters or spaces.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="rePassword" class="form-label">Retype password</label>
+            <input type="password" class="form-control" id="rePassword" name="rePassword">
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+    </form>
+{% endblock %}
