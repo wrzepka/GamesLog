@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from helpers import get_db, close_db, has_number, has_special, has_uppercase
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 app = Flask(__name__)
-
+app.secret_key = os.getenv('SECRET_KEY')
 # After any request, close connection
 app.teardown_appcontext(close_db)
 
@@ -16,15 +19,36 @@ def index():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        return redirect('/')
+        error = None
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if not email:
+            error = 'email cannot be blank!'
+        elif '@' not in email:
+            error = 'email is wrong!'
+        elif not password:
+            error = 'password cannot be blank!'
+
+        db = get_db()
+
+        user = db.execute("SELECT * from users WHERE email = ?", (email, )).fetchone()
+        if not user or not check_password_hash(user['password'], password):
+            error = 'invalid email or password'
+
+        if error is not None:
+            return render_template('login.html', error=error)
+        else:
+            session['user_id'] = user['id']
+            return redirect('/')
     else:
         return render_template('login.html')
 
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
-    error = None
     if request.method == 'POST':
+        error = None
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
