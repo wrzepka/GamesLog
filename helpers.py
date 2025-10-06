@@ -6,7 +6,7 @@ DB_NAME = 'database.db'
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
-            current_app.config[DB_NAME],
+            DB_NAME,
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
@@ -20,3 +20,20 @@ def close_db(exception=None):
 
     if db is not None:
         db.close()
+
+def has_uppercase(str):
+    for char in str:
+        if char.isupper():
+            return True
+    return False
+
+def has_number(str):
+    for char in str:
+        if char.isdigit():
+            return True
+    return False
+
+def has_special(str):
+    if not str.isalnum():
+        return True
+    return False
