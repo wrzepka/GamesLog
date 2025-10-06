@@ -15,7 +15,6 @@ app.teardown_appcontext(close_db)
 def index():
     return render_template('index.html')
 
-
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
@@ -83,3 +82,8 @@ def register():
             return redirect('/')
     else:
         return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id')
+    return redirect('/')
