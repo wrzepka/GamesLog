@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-    <h1 class="mb-4">Lorem ipsum</h1>
+{% if session.get("user_id")%}
+    <h1 class="mb-4">Zalogowales sie</h1>
+{% else %}
+    <h1 class="mb-4">GUEST</h1>
+{% endif %}
 {% endblock %}

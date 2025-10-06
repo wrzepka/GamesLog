@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, redirect
+from helpers import close_db
 
 app = Flask(__name__)
 
+# After any request, close connection
+app.teardown_appcontext(close_db)
 @app.route('/')
 def index():
     return render_template('index.html')
