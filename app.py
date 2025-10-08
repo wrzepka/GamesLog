@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SESSION_SECRET_KEY')
 # After any request, close connection
 app.teardown_appcontext(close_db)
 
