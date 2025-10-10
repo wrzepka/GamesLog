@@ -3,6 +3,7 @@ from helpers import get_db, close_db, has_number, has_special, has_uppercase
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
+from wrapper import top10_games
 
 load_dotenv()
 app = Flask(__name__)
@@ -13,7 +14,9 @@ app.teardown_appcontext(close_db)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    top_games_list = top10_games()
+
+    return render_template('index.html', games=top_games_list)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():

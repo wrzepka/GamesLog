@@ -6,4 +6,10 @@
 {% else %}
     <h1 class="mb-4">GUEST</h1>
 {% endif %}
+{% for game in games %}
+<div class="container">
+    <p class="mb-0">{{game.name}}: {{game.rating}}/100</p>
+    <img src="{{game.url}}" class="img-fluid" alt="{{game.name}}_cover">
+</div>
+{% endfor %}
 {% endblock %}
