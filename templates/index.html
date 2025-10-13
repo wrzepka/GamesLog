@@ -2,14 +2,21 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if session.get("user_id")%}
-    <h1 class="mb-4">Zalogowales sie</h1>
+<h1 class="mb-4">Zalogowales sie</h1>
 {% else %}
-    <h1 class="mb-4">GUEST</h1>
+<h1 class="mb-4">BEST GAMES OF ALL TIME!</h1>
 {% endif %}
-{% for game in games %}
-<div class="container">
-    <p class="mb-0">{{game.name}}: {{game.rating}}/100</p>
-    <img src="{{game.url}}" class="img-fluid" alt="{{game.name}}_cover">
+<div class="container d-flex flex-row justify-content-around flex-wrap">
+    {% for game in games %}
+    <div class="card mb-2" style="width: 18rem;">
+        <img src="{{game.url}}" class="card-img-top" alt="{{game.name}}_cover">
+        <div class="card-body">
+            <h5 class="card-title">{{game.name}}</h5>
+            <p class="card-text">Rating: {{game.rating}}/100</p>
+<!--            TODO: Link to the game shop like steam, uplay with the game-->
+            <a href="#" class="btn btn-primary">TODO</a>
+        </div>
+    </div>
+    {% endfor %}
 </div>
-{% endfor %}
 {% endblock %}

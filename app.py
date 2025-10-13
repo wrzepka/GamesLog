@@ -90,3 +90,7 @@ def register():
 def logout():
     session.pop('user_id')
     return redirect('/')
+
+@app.route('/user_log')
+def user_log():
+    return render_template('user_logs.html')
