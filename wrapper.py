@@ -58,8 +58,7 @@ def top10_games():
         result.append({
             'name':game['name'],
             'rating':round(game['total_rating'], 2),
-            # TODO: Get better img format
-            'url':f"https://images.igdb.com/igdb/image/upload/t_logo_med/{img_id}.jpg"
+            'url':f"https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{img_id}.jpg"
         })
 
     return result

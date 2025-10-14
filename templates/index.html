@@ -9,7 +9,7 @@
 <div class="container d-flex flex-row justify-content-around flex-wrap">
     {% for game in games %}
     <div class="card mb-2" style="width: 18rem;">
-        <img src="{{game.url}}" class="card-img-top" alt="{{game.name}}_cover">
+        <img src="{{game.url}}" class="card-img-top" alt="{{game.name}} cover">
         <div class="card-body">
             <h5 class="card-title">{{game.name}}</h5>
             <p class="card-text">Rating: {{game.rating}}/100</p>
