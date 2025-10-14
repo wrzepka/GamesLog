@@ -96,3 +96,7 @@ def logout():
 @app.route('/user_log')
 def user_log():
     return render_template('user_logs.html')
+
+@app.route('/game/search', methods=['POST', 'GET'])
+def game_search():
+    return render_template('search_game.html')

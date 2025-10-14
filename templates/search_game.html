@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+{% if session.get("user_id")%}
+    <form action="/game/search" method="post" class="m-5" style="max-width:400px; width:100%;">
+        <div class="mb-3">
+            <label for="game_name" class="form-label">Game name:</label>
+            <input type="text" class="form-control" name="game_name" id="game_name">
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mt-2">Search</button>
+    </form>
+{% else %}
+    <h1 class="mb-4" >Please login to search games</h1>
+{% endif %}
+{% endblock %}

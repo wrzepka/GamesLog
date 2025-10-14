@@ -62,3 +62,5 @@ def top10_games():
         })
 
     return result
+
+# TODO: Make functions for getting covers urls and for searching specific game!
