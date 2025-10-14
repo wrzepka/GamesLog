@@ -42,6 +42,8 @@ def login():
             return render_template('login.html', error=error)
         else:
             session['user_id'] = user['id']
+            username = db.execute("SELECT username from users WHERE id = ?", (user['id'], )).fetchone()
+            session['username'] = username['username']
             return redirect('/')
     else:
         return render_template('login.html')

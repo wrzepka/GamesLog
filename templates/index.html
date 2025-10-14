@@ -2,7 +2,7 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if session.get("user_id")%}
-<h1 class="mb-4">Zalogowales sie</h1>
+<h1 class="mb-4">Witaj {{session['username']}}!</h1>
 {% else %}
 <h1 class="mb-4">BEST GAMES OF ALL TIME!</h1>
 {% endif %}
