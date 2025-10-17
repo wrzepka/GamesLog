@@ -20,25 +20,17 @@ def get_token():
     request.raise_for_status()
     return request.json()
 
-# TO FIX XD
-# def validate_token(auth_date, token):
-#     expiration_time = token['expires_in']
-#     if time.time() > auth_date + expiration_time - 60:
-#         return False
-#     return True
-
-
 ACCESS_TOKEN = get_token()
 auth_time = time.time()
 
 wrapper = IGDBWrapper(IGDB_CLIENT, ACCESS_TOKEN['access_token'])
 
-
+# Only for testing purposes. To delete.
 def top10_games():
     games_bytes = wrapper.api_request(
         'games',
-        # TODO: Repair platform type (probably one more request for 'platform_type' endpoint)
-        'fields name,total_rating, cover; sort total_rating desc; limit 10; where total_rating_count > 100;'
+        # FIXME: Repair platform type (probably one more request for 'platform_type' endpoint)
+        'fields id,name,total_rating, cover; sort total_rating desc; limit 10; where total_rating_count > 100;'
     )
     games_json = json.loads(games_bytes.decode('utf-8'))
 
@@ -63,4 +55,41 @@ def top10_games():
 
     return result
 
-# TODO: Make functions for getting covers urls and for searching specific game!
+# TODO: Tests that functions. Probabbly search_games needs some more WHERE clause (duplications of the same games?)
+
+def search_games(game_name):
+    games_bytes = wrapper.api_request(
+        'games',
+        f'fields id, name, total_rating, cover; search "{game_name}"; '
+    )
+
+    games_json = json.loads(games_bytes.decode('utf-8'))
+
+    return games_json
+
+def get_games_img_id(games_json):
+    covers_id = [game['cover'] for game in games_json]
+    covers_str = ','.join(str(cover_id) for cover_id in covers_id)
+
+    covers_bytes = wrapper.api_request(
+        'covers',
+        f'fields image_id; where id = ({covers_str});'
+    )
+
+    covers_json = json.loads(covers_bytes.decode('utf-8'))
+    covers_dict = {cover['id'] : cover['image_id'] for cover in covers_json}
+
+    return covers_dict
+
+def create_data_dump(games_json, covers_dict:dict):
+    data = []
+
+    for game in games_json:
+        img_id = covers_dict.get(game['cover'])
+        data.append({
+            'name': game['name'],
+            'rating': round(game['total_rating'], 2),
+            'url': f"https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{img_id}.jpg"
+        })
+
+    return data
