@@ -3,7 +3,7 @@ from helpers import get_db, close_db, has_number, has_special, has_uppercase
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
-from wrapper import top10_games, search_games, get_games_img_id
+from wrapper import top10_games, search_games, get_games_img_id, create_data_dump
 
 load_dotenv()
 app = Flask(__name__)
@@ -100,16 +100,21 @@ def user_log():
 @app.route('/game/search', methods=['POST', 'GET'])
 def game_search():
     if request.method == 'GET':
-        render_template('search_game.html')
+        return render_template('search_game.html')
     else:
         error = None
         game_name = request.form.get('game_name')
 
         if not game_name:
             error = "game name cannot be blank"
-            render_template('user_logs.html', error=error)
+            return render_template('search_game.html', error=error)
 
         games_json = search_games(game_name)
 
         if len(games_json) == 0:
-            render_template('user_logs.html', data=None)
+            return render_template('search_game.html', data=None)
+
+        covers_dict = get_games_img_id(games_json)
+        data = create_data_dump(games_json, covers_dict)
+
+        return render_template('search_game.html', data=data, request=game_name)

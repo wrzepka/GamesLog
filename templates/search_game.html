@@ -2,14 +2,31 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if session.get("user_id")%}
-    <form action="/game/search" method="post" class="m-5" style="max-width:400px; width:100%;">
-        <div class="mb-3">
-            <label for="game_name" class="form-label">Game name:</label>
-            <input type="text" class="form-control" name="game_name" id="game_name">
+<form action="/game/search" method="post" class="m-5" style="max-width:400px; width:100%;">
+    <div class="mb-3">
+        <label for="game_name" class="form-label">Game name:</label>
+        <input type="text" class="form-control" name="game_name" id="game_name">
+    </div>
+    <button type="submit" class="btn btn-primary w-100 mt-2">Search</button>
+</form>
+{% if data %}
+<h1>Results for '{{request}}'</h1>
+<div class="container d-flex flex-row justify-content-around flex-wrap">
+    {% for game in data %}
+    <div class="card mb-2" style="width: 18rem;">
+        <img src="{{game.url}}" class="card-img-top" alt="{{game.name}} cover">
+        <div class="card-body">
+            <h5 class="card-title">{{game.name}}</h5>
+            <p class="card-text">Rating: {% if game.rating == 'NaN' %}NaN{% else %}{{ game.rating }}{% endif %}</p>
+            <!--            TODO: Link to the game shop like steam, uplay with the game-->
+            <!--            TODO: And 'add to log' and 'want to play' button-->
+            <a href="#" class="btn btn-primary">TODO</a>
         </div>
-        <button type="submit" class="btn btn-primary w-100 mt-2">Search</button>
-    </form>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% else %}
-    <h1 class="mb-4" >Please login to search games</h1>
+<h1 class="mb-4">Please login to search games</h1>
 {% endif %}
 {% endblock %}

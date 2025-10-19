@@ -56,11 +56,11 @@ def top10_games():
     return result
 
 # TODO: Tests that functions. Probabbly search_games needs some more WHERE clause (duplications of the same games?)
-
+# TODO: Still to fix platform type problem (We want only PC games)
 def search_games(game_name):
     games_bytes = wrapper.api_request(
         'games',
-        f'fields id, name, total_rating, cover; search "{game_name}"; '
+        f'fields id, name, total_rating, cover; search "{game_name}";'
     )
 
     games_json = json.loads(games_bytes.decode('utf-8'))
@@ -86,9 +86,10 @@ def create_data_dump(games_json, covers_dict:dict):
 
     for game in games_json:
         img_id = covers_dict.get(game['cover'])
+        total_rating = game.get('total_rating')
         data.append({
             'name': game['name'],
-            'rating': round(game['total_rating'], 2),
+            'rating': round(total_rating, 2) if total_rating is not None else "NaN",
             'url': f"https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{img_id}.jpg"
         })
 
