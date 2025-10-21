@@ -10,17 +10,20 @@
     <button type="submit" class="btn btn-primary w-100 mt-2">Search</button>
 </form>
 {% if data %}
-<h1>Results for '{{request}}'</h1>
+<hr>
+<h1 class="mb-5">Results for '{{request}}'</h1>
 <div class="container d-flex flex-row justify-content-around flex-wrap">
     {% for game in data %}
-    <div class="card mb-2" style="width: 18rem;">
+    <div class="card mb-2" style="width: 18rem; height: 25rem;">
         <img src="{{game.url}}" class="card-img-top" alt="{{game.name}} cover">
-        <div class="card-body">
-            <h5 class="card-title">{{game.name}}</h5>
-            <p class="card-text">Rating: {% if game.rating == 'NaN' %}NaN{% else %}{{ game.rating }}{% endif %}</p>
-            <!--            TODO: Link to the game shop like steam, uplay with the game-->
-            <!--            TODO: And 'add to log' and 'want to play' button-->
-            <a href="#" class="btn btn-primary">TODO</a>
+        <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
+            <h4 class="card-title flex-grow-1">{{game.name}}</h4>
+            <p class="card-text">Rating: {% if game.rating != "NaN" %}{{game.rating}}/100 {% else %}not available{% endif %}</p>
+            <div class="container">
+                <a href="#" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                <a href="#" class="btn btn-primary"><i class="bi bi-controller"></i></a>
+                <a href="#" class="btn btn-primary"><i class="bi bi-check-circle"></i></a>
+            </div>
         </div>
     </div>
     {% endfor %}

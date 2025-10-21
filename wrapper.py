@@ -27,9 +27,17 @@ wrapper = IGDBWrapper(IGDB_CLIENT, ACCESS_TOKEN['access_token'])
 
 # Only for testing purposes. To delete.
 def top10_games():
+    platform_types = wrapper.api_request(
+        'platform_types',
+        # FIXME: Repair platform type (probably one more request for 'platform_type' endpoint)
+        'fields *;'
+    )
+
+    platform_json = json.loads(platform_types.decode('utf-8'))
+    print(platform_json)
     games_bytes = wrapper.api_request(
         'games',
-        # FIXME: Repair platform type (probably one more request for 'platform_type' endpoint)
+        # FIXME: Repair platform type (probably one more request for 'platform_type' endpoint!!!!!!!!)
         'fields id,name,total_rating, cover; sort total_rating desc; limit 10; where total_rating_count > 100;'
     )
     games_json = json.loads(games_bytes.decode('utf-8'))
@@ -87,9 +95,16 @@ def create_data_dump(games_json, covers_dict:dict):
     for game in games_json:
         img_id = covers_dict.get(game['cover'])
         total_rating = game.get('total_rating')
+
+        if total_rating is None:
+            rating = 'NaN'
+        else:
+            rating = float(total_rating)
+            rating = int(round(rating))
+
         data.append({
             'name': game['name'],
-            'rating': round(total_rating, 2) if total_rating is not None else "NaN",
+            'rating': rating,
             'url': f"https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{img_id}.jpg"
         })
 
