@@ -18,11 +18,20 @@
         <img src="{{game.url}}" class="card-img-top" alt="{{game.name}} cover">
         <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
             <h4 class="card-title flex-grow-1">{{game.name}}</h4>
-            <p class="card-text">Rating: {% if game.rating != "NaN" %}{{game.rating}}/100 {% else %}not available{% endif %}</p>
+            <p class="card-text">Rating: {% if game.rating != "NaN" %}{{game.rating}}/100 {% else %}not available{%
+                endif %}</p>
             <div class="container">
-                <a href="#" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
-                <a href="#" class="btn btn-primary"><i class="bi bi-controller"></i></a>
-                <a href="#" class="btn btn-primary"><i class="bi bi-check-circle"></i></a>
+                <form action="/game/{{game.id}}/status" method="post">
+                    <input type="hidden" name="game_name" value="{{game.name}}">
+                    <input type="hidden" name="game_rating" value="{{game.rating}}">
+                    <!--TODO: IN FUTURE (Have to add table column)<input type="hidden" name="game_url" value="{{game.url}}">-->
+                    <button type="submit" class="btn btn-primary" name="type" value="Wish"><i
+                            class="bi bi-plus-circle"></i></button>
+                    <button type="submit" class="btn btn-primary" name="type" value="Playing"><i
+                            class="bi bi-controller"></i></button>
+                    <button type="submit" class="btn btn-primary" name="type" value="Finished"><i
+                            class="bi bi-check-circle"></i></button>
+                </form>
             </div>
         </div>
     </div>

@@ -18,6 +18,7 @@ def index():
 
     return render_template('index.html', games=top_games_list)
 
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
@@ -34,7 +35,7 @@ def login():
 
         db = get_db()
 
-        user = db.execute("SELECT * from users WHERE email = ?", (email, )).fetchone()
+        user = db.execute("SELECT * from users WHERE email = ?", (email,)).fetchone()
         if not user or not check_password_hash(user['password'], password):
             error = 'invalid email or password'
 
@@ -42,7 +43,7 @@ def login():
             return render_template('login.html', error=error)
         else:
             session['user_id'] = user['id']
-            username = db.execute("SELECT username from users WHERE id = ?", (user['id'], )).fetchone()
+            username = db.execute("SELECT username from users WHERE id = ?", (user['id'],)).fetchone()
             session['username'] = username['username']
             return redirect('/')
     else:
@@ -88,14 +89,18 @@ def register():
     else:
         return render_template('register.html')
 
+
 @app.route('/logout')
 def logout():
     session.pop('user_id')
+    session.pop('username')
     return redirect('/')
+
 
 @app.route('/user_log')
 def user_log():
     return render_template('user_logs.html')
+
 
 @app.route('/game/search', methods=['POST', 'GET'])
 def game_search():
@@ -118,3 +123,27 @@ def game_search():
         data = create_data_dump(games_json, covers_dict)
 
         return render_template('search_game.html', data=data, request=game_name)
+
+
+@app.route('/game/<game_id>/status', methods=['POST'])
+def add_game_to_logs(game_id):
+    if not session['user_id']:
+        return redirect('/login')
+
+    type = request.form.get('type')
+    db = get_db()
+
+    # TODO: Think about adding URL and IGDB_rating columns to games_logs table
+    if type == "Wish" or type == "Playing" or type == "Finished":
+        #TODO: Check db before inserting new log (could be added before)
+        db.execute(
+            # TODO: Modify table (delete UNIQUE at status column)
+            "INSERT INTO games_logs (user_id, igdb_game_id, status) VALUES (?, ?, ?);",
+            (session.get('user_id'), game_id, type),
+        )
+        db.commit()
+    else:
+        #TODO: Error handling?
+        return redirect('/')
+
+    return redirect('/')
