@@ -114,14 +114,35 @@ def game_search():
             error = "game name cannot be blank"
             return render_template('search_game.html', error=error)
 
-        games_json = search_games(game_name)
+        db = get_db()
 
-        if len(games_json) == 0:
-            return render_template('search_game.html', data=None)
+        # TODO: Rewrite using upsert
+        # TODO: Rating must be a string (NaN case) or change it completely to integer and NULL
+        # TODO: repair datetime(now) in update_at columns
+        games_json = db.execute("SELECT * from games WHERE name LIKE ? COLLATE NOCASE LIMIT ?", (f'%{game_name}%', 30)).fetchall()
+        if len(games_json) != 0:
+            data = []
 
-        covers_dict = get_games_img_id(games_json)
-        data = create_data_dump(games_json, covers_dict)
+            for game in games_json:
+                data.append({
+                    'id': game['id'],
+                    'name': game['name'],
+                    'rating': game['igdb_rating'],
+                    'url': game['cover_url']
+                })
+        else:
+            games_json = search_games(game_name)
 
+            if len(games_json) == 0:
+                return render_template('search_game.html', data=None)
+
+            covers_dict = get_games_img_id(games_json)
+            data = create_data_dump(games_json, covers_dict)
+
+            for game in data:
+                db.execute("INSERT INTO games (igdb_game_id, igdb_rating, name, cover_url)"
+                            "VALUES (?, ?, ?, ?)", (game['id'], game['rating'], game['name'], game['url']))
+                db.commit()
         return render_template('search_game.html', data=data, request=game_name)
 
 
@@ -135,7 +156,7 @@ def add_game_to_logs(game_id):
 
     # TODO: Think about adding URL and IGDB_rating columns to games_logs table
     if type == "Wish" or type == "Playing" or type == "Finished":
-        #TODO: Check db before inserting new log (could be added before)
+        # TODO: Check db before inserting new log (could be added before)
         db.execute(
             # TODO: Modify table (delete UNIQUE at status column)
             "INSERT INTO games_logs (user_id, igdb_game_id, status) VALUES (?, ?, ?);",
@@ -143,7 +164,7 @@ def add_game_to_logs(game_id):
         )
         db.commit()
     else:
-        #TODO: Error handling?
+        # TODO: Error handling?
         return redirect('/')
 
     return redirect('/')
