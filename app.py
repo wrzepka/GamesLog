@@ -159,7 +159,6 @@ def add_game_to_logs(game_id):
     if type == "Wish" or type == "Playing" or type == "Finished":
         # TODO: Check db before inserting new log (could be added before)
         db.execute(
-            # TODO: Modify table (delete UNIQUE at status column)
             "INSERT INTO games_logs (user_id, igdb_game_id, status) VALUES (?, ?, ?);",
             (session.get('user_id'), game_id, type),
         )
