@@ -119,6 +119,7 @@ def game_search():
         # TODO: Rewrite using upsert
         # TODO: Rating must be a string (NaN case) or change it completely to integer and NULL
         # TODO: repair datetime(now) in update_at columns
+        # TODO: maybe change cover_url to img_id
         games_json = db.execute("SELECT * from games WHERE name LIKE ? COLLATE NOCASE LIMIT ?", (f'%{game_name}%', 30)).fetchall()
         if len(games_json) != 0:
             data = []
