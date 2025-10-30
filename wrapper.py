@@ -20,10 +20,12 @@ def get_token():
     request.raise_for_status()
     return request.json()
 
+
 ACCESS_TOKEN = get_token()
 auth_time = time.time()
 
 wrapper = IGDBWrapper(IGDB_CLIENT, ACCESS_TOKEN['access_token'])
+
 
 # Only for testing purposes. To delete.
 def top10_games():
@@ -50,31 +52,32 @@ def top10_games():
     )
 
     covers_json = json.loads(covers_bytes.decode('utf-8'))
-    covers_dict = {cover['id'] : cover['image_id'] for cover in covers_json}
+    covers_dict = {cover['id']: cover['image_id'] for cover in covers_json}
     result = []
 
     for game in games_json:
         img_id = covers_dict.get(game['cover'])
         result.append({
             'id': game['id'],
-            'name':game['name'],
-            'rating':round(game['total_rating'], 2),
+            'name': game['name'],
+            'rating': round(game['total_rating'], 2),
             'img_id': img_id
         })
 
     return result
 
-# TODO: Tests that functions. Probabbly search_games needs some more WHERE clause (duplications of the same games?)
-# TODO: Still to fix platform type problem (We want only PC games)
 
 def find_games(name):
+    # TODO: In future expand that (return more data)
     games_bytes = wrapper.api_request(
         'games',
-        f'fields id, name, total_rating, cover.image_id; search "{name}";'
+        f'fields id, name, total_rating, cover.image_id;'
+        f' search "{name}";'
+        f' where platforms.name = ("PC (Microsoft Windows)", "Mac", "Xbox Series X|S", "PlayStation 5", "Xbox One", "Playstation 4", "Xbox 360", "Playstation 3")'
+        f'& game_type.type != "Mod";'
     )
 
     games_json = json.loads(games_bytes.decode('utf-8'))
-
     data = []
 
     for game in games_json:

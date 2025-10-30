@@ -3,7 +3,7 @@ from helpers import get_db, close_db, has_number, has_special, has_uppercase
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
-from wrapper import top10_games, search_games, get_games_img_id, create_data_dump, find_games
+from wrapper import top10_games, find_games
 
 load_dotenv()
 app = Flask(__name__)
@@ -116,9 +116,11 @@ def game_search():
 
         db = get_db()
 
-        # TODO: Rewrite using upsert
+        # TODO: Rewrite using upsert (maybe)
         games_json = db.execute("SELECT * from games WHERE name LIKE ? COLLATE NOCASE LIMIT ?",
                                 (f'%{game_name}%', 30)).fetchall()
+
+        games_json = []
         if len(games_json) != 0:
             data = []
 
