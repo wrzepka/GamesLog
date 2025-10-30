@@ -59,7 +59,7 @@ def top10_games():
             'id': game['id'],
             'name':game['name'],
             'rating':round(game['total_rating'], 2),
-            'url':f"https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{img_id}.jpg"
+            'img_id': img_id
         })
 
     return result
@@ -107,7 +107,7 @@ def create_data_dump(games_json, covers_dict:dict):
             'id': game['id'],
             'name': game['name'],
             'rating': rating,
-            'url': f"https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{img_id}.jpg"
+            'img_id': img_id
         })
 
     return data

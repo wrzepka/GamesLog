@@ -118,8 +118,6 @@ def game_search():
 
         # TODO: Rewrite using upsert
         # TODO: Rating must be a string (NaN case) or change it completely to integer and NULL
-        # TODO: repair datetime(now) in update_at columns
-        # TODO: maybe change cover_url to img_id
         games_json = db.execute("SELECT * from games WHERE name LIKE ? COLLATE NOCASE LIMIT ?", (f'%{game_name}%', 30)).fetchall()
         if len(games_json) != 0:
             data = []
@@ -129,7 +127,7 @@ def game_search():
                     'id': game['id'],
                     'name': game['name'],
                     'rating': game['igdb_rating'],
-                    'url': game['cover_url']
+                    'img_id': game['img_id']
                 })
         else:
             games_json = search_games(game_name)
@@ -141,8 +139,8 @@ def game_search():
             data = create_data_dump(games_json, covers_dict)
 
             for game in data:
-                db.execute("INSERT INTO games (igdb_game_id, igdb_rating, name, cover_url)"
-                            "VALUES (?, ?, ?, ?)", (game['id'], game['rating'], game['name'], game['url']))
+                db.execute("INSERT INTO games (igdb_game_id, igdb_rating, name, img_id)"
+                            "VALUES (?, ?, ?, ?)", (game['id'], game['rating'], game['name'], game['img_id']))
                 db.commit()
         return render_template('search_game.html', data=data, request=game_name)
 

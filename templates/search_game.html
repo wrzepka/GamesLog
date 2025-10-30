@@ -15,7 +15,7 @@
 <div class="container d-flex flex-row justify-content-around flex-wrap">
     {% for game in data %}
     <div class="card mb-2" style="width: 18rem; height: 25rem;">
-        <img src="{{game.url}}" class="card-img-top" alt="{{game.name}} cover">
+        <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg" class="card-img-top" alt="{{game.name}} cover">
         <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
             <h4 class="card-title flex-grow-1">{{game.name}}</h4>
             <p class="card-text">Rating: {% if game.rating != "NaN" %}{{game.rating}}/100 {% else %}not available{%
