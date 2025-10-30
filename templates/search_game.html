@@ -18,7 +18,7 @@
         <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg" class="card-img-top" alt="{{game.name}} cover">
         <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
             <h4 class="card-title flex-grow-1">{{game.name}}</h4>
-            <p class="card-text">Rating: {% if game.rating != "NaN" %}{{game.rating}}/100 {% else %}not available{%
+            <p class="card-text">Rating: {% if game.rating != None %}{{game.rating}}/100 {% else %}not available{%
                 endif %}</p>
             <div class="container">
                 <form action="/game/{{game.id}}/status" method="post">

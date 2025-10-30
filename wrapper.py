@@ -66,41 +66,26 @@ def top10_games():
 
 # TODO: Tests that functions. Probabbly search_games needs some more WHERE clause (duplications of the same games?)
 # TODO: Still to fix platform type problem (We want only PC games)
-def search_games(game_name):
+
+def find_games(name):
     games_bytes = wrapper.api_request(
         'games',
-        f'fields id, name, total_rating, cover; search "{game_name}";'
+        f'fields id, name, total_rating, cover.image_id; search "{name}";'
     )
 
     games_json = json.loads(games_bytes.decode('utf-8'))
 
-    return games_json
-
-def get_games_img_id(games_json):
-    covers_id = [game['cover'] for game in games_json]
-    covers_str = ','.join(str(cover_id) for cover_id in covers_id)
-
-    covers_bytes = wrapper.api_request(
-        'covers',
-        f'fields image_id; where id = ({covers_str});'
-    )
-
-    covers_json = json.loads(covers_bytes.decode('utf-8'))
-    covers_dict = {cover['id'] : cover['image_id'] for cover in covers_json}
-
-    return covers_dict
-
-def create_data_dump(games_json, covers_dict:dict):
     data = []
 
     for game in games_json:
-        img_id = covers_dict.get(game['cover'])
-        total_rating = game.get('total_rating')
+        rating = game.get('total_rating') if game.get('total_rating') is not None else None
+        cover = game.get('cover') if game.get('cover') is not None else None
 
-        if total_rating is None:
-            rating = 'NaN'
-        else:
-            rating = float(total_rating)
+        img_id = None
+        if cover is not None:
+            img_id = cover.get('image_id')
+
+        if rating is not None:
             rating = int(round(rating))
 
         data.append({

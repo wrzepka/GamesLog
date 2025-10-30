@@ -3,7 +3,7 @@ from helpers import get_db, close_db, has_number, has_special, has_uppercase
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
-from wrapper import top10_games, search_games, get_games_img_id, create_data_dump
+from wrapper import top10_games, search_games, get_games_img_id, create_data_dump, find_games
 
 load_dotenv()
 app = Flask(__name__)
@@ -117,8 +117,8 @@ def game_search():
         db = get_db()
 
         # TODO: Rewrite using upsert
-        # TODO: Rating must be a string (NaN case) or change it completely to integer and NULL
-        games_json = db.execute("SELECT * from games WHERE name LIKE ? COLLATE NOCASE LIMIT ?", (f'%{game_name}%', 30)).fetchall()
+        games_json = db.execute("SELECT * from games WHERE name LIKE ? COLLATE NOCASE LIMIT ?",
+                                (f'%{game_name}%', 30)).fetchall()
         if len(games_json) != 0:
             data = []
 
@@ -130,18 +130,15 @@ def game_search():
                     'img_id': game['img_id']
                 })
         else:
-            games_json = search_games(game_name)
+            data = find_games(game_name)
 
-            if len(games_json) == 0:
-                return render_template('search_game.html', data=None)
-
-            covers_dict = get_games_img_id(games_json)
-            data = create_data_dump(games_json, covers_dict)
-
+            #TODO: need to find solution for updating old games data (e.g. older than 7 days)
             for game in data:
-                db.execute("INSERT INTO games (igdb_game_id, igdb_rating, name, img_id)"
-                            "VALUES (?, ?, ?, ?)", (game['id'], game['rating'], game['name'], game['img_id']))
-                db.commit()
+                db.execute("INSERT INTO games (igdb_game_id, igdb_rating, name, img_id) "
+                           "VALUES (?, ?, ?, ?)"
+                           "ON CONFLICT(igdb_game_id) DO NOTHING;",
+                           (game['id'], game['rating'], game['name'], game['img_id']))
+            db.commit()
         return render_template('search_game.html', data=data, request=game_name)
 
 
