@@ -36,7 +36,7 @@ def top10_games():
     )
 
     platform_json = json.loads(platform_types.decode('utf-8'))
-    print(platform_json)
+
     games_bytes = wrapper.api_request(
         'games',
         # FIXME: Repair platform type (probably one more request for 'platform_type' endpoint!!!!!!!!)
