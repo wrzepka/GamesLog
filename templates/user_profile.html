@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+{% if session.get("user_id")%}
+<h1 class="mb-4">Your Game Log!</h1>
+<!--TODO: Create better design-->
+<div class="container">
+    <h1 class="mb-2">Playing</h1>
+    {% if playing %}
+    {% for game in playing %}
+    <div class="card mb-2" style="width: 10rem; height: 17rem;">
+        <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg" class="card-img-top"
+             alt="{{game.name}} cover">
+        <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
+            <h4 class="card-title flex-grow-1">{{game.name}}</h4>
+            <p class="card-text">Rating: {% if game.rating != None %}{{game.rating}}/100 {% else %}not available{%
+                endif %}</p>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>List is empty!</p>
+    {% endif %}
+</div>
+<div class="container">
+    <h1 class="mb-2">To play</h1>
+    {% if Wish %}
+    {% for game in Wish %}
+    <div class="card mb-2" style="width: 10rem; height: 17rem;">
+        <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg" class="card-img-top"
+             alt="{{game.name}} cover">
+        <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
+            <h4 class="card-title flex-grow-1">{{game.name}}</h4>
+            <p class="card-text">Rating: {% if game.rating != None %}{{game.rating}}/100 {% else %}not available{%
+                endif %}</p>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>List is empty!</p>
+    {% endif %}
+</div>
+<div class="container">
+    <h1 class="mb-2">Finished</h1>
+    {% if Finished %}
+    {% for game in Finished %}
+    <div class="card mb-2" style="width: 10rem; height: 17rem;">
+        <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg" class="card-img-top"
+             alt="{{game.name}} cover">
+        <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
+            <h4 class="card-title flex-grow-1">{{game.name}}</h4>
+            <p class="card-text">Rating: {% if game.rating != None %}{{game.rating}}/100 {% else %}not available{%
+                endif %}</p>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>List is empty!</p>
+    {% endif %}
+</div>
+{% else %}
+<h1 class="mb-4">Please login to view your Log</h1>
+{% endif %}
+{% endblock %}

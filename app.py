@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, session
-from helpers import get_db, close_db, has_number, has_special, has_uppercase
+from helpers import has_number, has_special, has_uppercase
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
 from wrapper import top10_games, find_games
+from db import close_db, get_db
+from sql_queries import get_user_playing_logs
 
 load_dotenv()
 app = Flask(__name__)
@@ -85,6 +87,7 @@ def register():
             db.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
                        (username, email, hashed_passwd))
             db.commit()
+
             return redirect('/')
     else:
         return render_template('register.html')
@@ -97,9 +100,10 @@ def logout():
     return redirect('/')
 
 
-@app.route('/user_log')
-def user_log():
-    return render_template('user_logs.html')
+@app.route('/profile')
+def profile():
+    playing = get_user_playing_logs()
+    return render_template('user_profile.html', playing=playing)
 
 
 @app.route('/game/search', methods=['POST', 'GET'])
@@ -120,7 +124,6 @@ def game_search():
         games_json = db.execute("SELECT * from games WHERE name LIKE ? COLLATE NOCASE LIMIT ?",
                                 (f'%{game_name}%', 30)).fetchall()
 
-        games_json = []
         if len(games_json) != 0:
             data = []
 
