@@ -102,7 +102,7 @@ def logout():
 
 @app.route('/profile')
 def profile():
-    playing = get_user_playing_logs()
+    playing = get_user_playing_logs("Playing")
     return render_template('user_profile.html', playing=playing)
 
 
