@@ -13,31 +13,40 @@
 <hr>
 <h1 class="mb-5">Results for '{{request}}'</h1>
 <div class="container d-flex flex-row justify-content-around flex-wrap">
+    <!--    TODO: redevelop it. I dunno yet like what-->
     {% for game in data %}
-    <div class="card mb-2" style="width: 18rem; height: 25rem;">
-        <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg" class="card-img-top"
-             alt="{{game.name}} cover">
-        <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
-            <h4 class="card-title flex-grow-1">{{game.name}}</h4>
-            <p class="card-text">Rating: {% if game.rating != None %}{{game.rating}}/100 {% else %}not available{%
-                endif %}</p>
-            <div class="container">
-                <form action="/game/{{game.id}}/status" method="post">
-                    <input type="hidden" name="game_name" value="{{game.name}}">
-                    <input type="hidden" name="game_rating" value="{{game.rating}}">
-                    <!--TODO: IN FUTURE (Have to add table column)<input type="hidden" name="game_url" value="{{game.url}}">-->
-                    <!--TODO: IN FUTURE (make buttons gray if game is TBD (only wish list option)                   -->
-                    <!--TODO: make specific buttons gray if user added already added game to logs-->
-                    <button type="submit" class="btn btn-primary" name="type" value="Wish"><i
-                            class="bi bi-plus-circle"></i></button>
-                    <button type="submit" class="btn btn-primary" name="type" value="Playing"><i
-                            class="bi bi-controller"></i></button>
-                    <button type="submit" class="btn btn-primary" name="type" value="Finished"><i
-                            class="bi bi-check-circle"></i></button>
-                </form>
+    <div class="card mb-3" style="width: 30rem; max-height: 15rem;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/{{game.img_id}}.jpg"
+                     class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{game.name}}</h5>
+                    <div class="container">
+                        <form action="/game/{{game.id}}/status" method="post">
+                            <input type="hidden" name="game_name" value="{{game.name}}">
+                            <input type="hidden" name="game_rating" value="{{game.rating}}">
+                            <!--TODO: IN FUTURE (Have to add table column)<input type="hidden" name="game_url" value="{{game.url}}">-->
+                            <!--TODO: IN FUTURE (make buttons gray if game is TBD (only wish list option)                   -->
+                            <!--TODO: make specific buttons gray if user added already added game to logs-->
+                            <button type="submit" class="btn btn-primary" name="type" value="Wish"><i
+                                    class="bi bi-plus-circle"></i></button>
+                            <button type="submit" class="btn btn-primary" name="type" value="Playing"><i
+                                    class="bi bi-controller"></i></button>
+                            <button type="submit" class="btn btn-primary" name="type" value="Finished"><i
+                                    class="bi bi-check-circle"></i></button>
+                        </form>
+                    </div>
+                    <p class="card-text"><small class="text-body-secondary">Rating: {% if game.rating != None
+                        %}{{game.rating}}/100 {% else %}not available{%
+                        endif %}</small></p>
+                </div>
             </div>
         </div>
     </div>
+
     {% endfor %}
 </div>
 {% endif %}

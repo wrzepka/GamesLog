@@ -163,7 +163,7 @@ def add_game_to_logs(game_id):
 
         if is_game_in_logs:
             # TODO: Error handling?
-            return redirect('/')
+            return redirect('/game/search')
 
         db.execute(
             "INSERT INTO users_logs (user_id, game_id, status) VALUES (?, ?, ?);",
@@ -172,6 +172,6 @@ def add_game_to_logs(game_id):
         db.commit()
     else:
         # TODO: Error handling?
-        return redirect('/')
+        return redirect('/game/search')
 
-    return redirect('/')
+    return redirect('/profile')
