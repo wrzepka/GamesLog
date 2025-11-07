@@ -103,7 +103,9 @@ def logout():
 @app.route('/profile')
 def profile():
     playing = get_user_playing_logs("Playing")
-    return render_template('user_profile.html', playing=playing)
+    wishlisted = get_user_playing_logs("Wish")
+    finished = get_user_playing_logs("Finished")
+    return render_template('user_profile.html', playing=playing, wishlisted=wishlisted, finished=finished)
 
 
 @app.route('/game/search', methods=['POST', 'GET'])
