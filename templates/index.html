@@ -2,35 +2,42 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if session.get("user_id")%}
-<h1 class="mb-4">Welcome {{session['username']}}!</h1>
+<h1 class="my-4 text-center">Welcome {{session['username']}}!</h1>
 {% else %}
-<h1 class="mb-4">BEST GAMES OF ALL TIME!</h1>
+<h1 class="my-4 text-center">Welcome to our site!</h1>
 {% endif %}
-<div class="container d-flex flex-row justify-content-around flex-wrap">
-    {% for game in games %}
-    <div class="card mb-2" style="width: 18rem; height: 25rem;">
-        <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg" class="card-img-top"
-             alt="{{game.name}} cover">
-        <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
-            <h4 class="card-title flex-grow-1">{{game.name}}</h4>
-            <p class="card-text">Rating: {% if game.rating != None %}{{game.rating}}/100 {% else %}not available{%
-                endif %}</p>
-            <div class="container">
-                <form action="/game/{{game.id}}/status" method="post">
-                    <!--TODO: Rebuild it                   -->
-                    <input type="hidden" name="game_name" value="{{game.name}}">
-                    <input type="hidden" name="game_rating" value="{{game.rating}}">
-                    <!--TODO: IN FUTURE (Have to add table column)<input type="hidden" name="game_url" value="{{game.url}}">-->
-                    <button type="submit" class="btn btn-primary" name="type" value="Wish"><i
-                            class="bi bi-plus-circle"></i></button>
-                    <button type="submit" class="btn btn-primary" name="type" value="Playing"><i
-                            class="bi bi-controller"></i></button>
-                    <button type="submit" class="btn btn-primary" name="type" value="Finished"><i
-                            class="bi bi-check-circle"></i></button>
-                </form>
+<div class="container">
+    <div class="row g-4">
+        {% for game in games %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="ratio ratio-4x3">
+                    <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/{{game.img_id}}.jpg"
+                         class="card-img-top"
+                         style="object-fit:cover;"
+                         alt="{{game.name}}-cover">
+                </div>
+                <div class="card-body d-flex flex-column text-center">
+                    <h5 class="card-title mb-auto">{{game.name}}</h5>
+                    <p class="card-text"><small class="text-body-secondary">Rating:
+                        {% if game.rating != None %}{{game.rating}}/100 {% else %}not available{% endif %}
+                    </small></p>
+                    <div class="mt-auto">
+                        <form action="/game/{{game.id}}/status" method="post">
+                            <input type="hidden" name="game_id" value="{{game.id}}">
+                            <!--TODO:Implement disabled button mechanic.                            -->
+                            <button type="submit" class="btn btn-primary" name="type" value="Wish"><i
+                                    class="bi bi-plus-circle"></i></button>
+                            <button type="submit" class="btn btn-primary" name="type" value="Playing"><i
+                                    class="bi bi-controller"></i></button>
+                            <button type="submit" class="btn btn-primary" name="type" value="Finished"><i
+                                    class="bi bi-check-circle"></i></button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 {% endblock %}
