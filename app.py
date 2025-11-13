@@ -159,10 +159,7 @@ def add_game_to_logs(game_id):
     type = request.form.get('type')
     db = get_db()
 
-    # TODO: Think about adding URL and IGDB_rating columns to games_logs table
     if type == "Wish" or type == "Playing" or type == "Finished":
-        # TODO: Check db before inserting new log (could be added before)
-
         is_game_in_logs = True if db.execute("SELECT * from users_logs WHERE game_id = ? AND user_id = ?", (game_id, session['user_id'])).fetchone() else False
 
         if is_game_in_logs:

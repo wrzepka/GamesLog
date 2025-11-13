@@ -29,42 +29,39 @@ wrapper = IGDBWrapper(IGDB_CLIENT, ACCESS_TOKEN['access_token'])
 
 # Only for testing purposes. To delete.
 def top10_games():
-    platform_types = wrapper.api_request(
-        'platform_types',
-        # FIXME: Repair platform type (probably one more request for 'platform_type' endpoint)
-        'fields *;'
-    )
-
-    platform_json = json.loads(platform_types.decode('utf-8'))
-
+    # TODO: In future expand that (return more data)
     games_bytes = wrapper.api_request(
         'games',
-        # FIXME: Repair platform type (probably one more request for 'platform_type' endpoint!!!!!!!!)
-        'fields id,name,total_rating, cover; sort total_rating desc; limit 10; where total_rating_count > 100;'
+        f'fields id, name, total_rating, cover.image_id;'
+        f' where platforms.name = ("PC (Microsoft Windows)", "Mac", "Xbox Series X|S", "PlayStation 5", "Xbox One", "Playstation 4", "Xbox 360", "Playstation 3")'
+        f'& game_type.type != "Mod" & total_rating_count > 500;'
+        f'sort rating desc;'
+        f'limit 50;'
     )
+
     games_json = json.loads(games_bytes.decode('utf-8'))
+    data = []
 
-    covers_id = [game['cover'] for game in games_json if 'cover' in game]
-    covers_str = ','.join(str(i) for i in covers_id)
-    covers_bytes = wrapper.api_request(
-        'covers',
-        f'fields image_id; where id = ({covers_str});'
-    )
-
-    covers_json = json.loads(covers_bytes.decode('utf-8'))
-    covers_dict = {cover['id']: cover['image_id'] for cover in covers_json}
-    result = []
-
+    # TODO:Refactor that
     for game in games_json:
-        img_id = covers_dict.get(game['cover'])
-        result.append({
+        rating = game.get('total_rating') if game.get('total_rating') is not None else None
+        cover = game.get('cover') if game.get('cover') is not None else None
+
+        img_id = None
+        if cover is not None:
+            img_id = cover.get('image_id')
+
+        if rating is not None:
+            rating = int(round(rating))
+
+        data.append({
             'id': game['id'],
             'name': game['name'],
-            'rating': round(game['total_rating'], 2),
+            'rating': rating,
             'img_id': img_id
         })
 
-    return result
+    return data
 
 
 def find_games(name):
@@ -80,6 +77,7 @@ def find_games(name):
     games_json = json.loads(games_bytes.decode('utf-8'))
     data = []
 
+    # TODO:Refactor that
     for game in games_json:
         rating = game.get('total_rating') if game.get('total_rating') is not None else None
         cover = game.get('cover') if game.get('cover') is not None else None

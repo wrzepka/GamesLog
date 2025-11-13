@@ -1,7 +1,3 @@
-import sqlite3
-from flask import current_app, g
-
-
 def has_uppercase(str):
     for char in str:
         if char.isupper():
