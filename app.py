@@ -6,8 +6,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
 from wrapper import top10_games, find_games
-from db import close_db, get_db
-from sql_queries import get_user_playing_logs
+from db import close_db
+from sql_queries import get_user_playing_logs, register_user, cache_games, get_cached_games, is_game_in_user_logs, \
+    add_game_to_user_logs, find_user, get_user_name
 
 load_dotenv()
 app = Flask(__name__)
@@ -37,9 +38,7 @@ def login():
         elif not password:
             error = 'password cannot be blank!'
 
-        db = get_db()
-
-        user = db.execute("SELECT * from users WHERE email = ?", (email,)).fetchone()
+        user = find_user(email)
         if not user or not check_password_hash(user['password'], password):
             error = 'invalid email or password'
 
@@ -47,7 +46,7 @@ def login():
             return render_template('login.html', error=error)
         else:
             session['user_id'] = user['id']
-            username = db.execute("SELECT username from users WHERE id = ?", (user['id'],)).fetchone()
+            username = get_user_name(user['id'])
             session['username'] = username['username']
             return redirect('/')
     else:
@@ -85,10 +84,7 @@ def register():
             return render_template('register.html', error=error)
         else:
             hashed_passwd = generate_password_hash(password)
-            db = get_db()
-            db.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
-                       (username, email, hashed_passwd))
-            db.commit()
+            register_user(username, email, hashed_passwd)
 
             return redirect('/')
     else:
@@ -122,11 +118,7 @@ def game_search():
             error = "game name cannot be blank"
             return render_template('search_game.html', error=error)
 
-        db = get_db()
-
-        # TODO: Rewrite using upsert (maybe)
-        games_json = db.execute("SELECT * from games WHERE name LIKE ? COLLATE NOCASE LIMIT ?",
-                                (f'%{game_name}%', 30)).fetchall()
+        games_json = get_cached_games(game_name)
 
         if len(games_json) != 0:
             data = []
@@ -140,37 +132,25 @@ def game_search():
                 })
         else:
             data = find_games(game_name)
+            cache_games(data)
 
-            #TODO: need to find solution for updating old games data (e.g. older than 7 days)
-            for game in data:
-                db.execute("INSERT INTO games (igdb_game_id, igdb_rating, name, img_id) "
-                           "VALUES (?, ?, ?, ?)"
-                           "ON CONFLICT(igdb_game_id) DO NOTHING;",
-                           (game['id'], game['rating'], game['name'], game['img_id']))
-            db.commit()
         return render_template('search_game.html', data=data, game_name=game_name)
 
 
 @app.route('/game/<game_id>/status', methods=['POST'])
+# TODO: Change name?
 def add_game_to_logs(game_id):
     if not session['user_id']:
         return redirect('/login')
 
     type = request.form.get('type')
-    db = get_db()
 
     if type == "Wish" or type == "Playing" or type == "Finished":
-        is_game_in_logs = True if db.execute("SELECT * from users_logs WHERE game_id = ? AND user_id = ?", (game_id, session['user_id'])).fetchone() else False
-
-        if is_game_in_logs:
+        if is_game_in_user_logs(game_id, session['user_id']):
             # TODO: Error handling?
             return redirect('/game/search')
 
-        db.execute(
-            "INSERT INTO users_logs (user_id, game_id, status) VALUES (?, ?, ?);",
-            (session.get('user_id'), game_id, type),
-        )
-        db.commit()
+        add_game_to_user_logs(game_id, type, session['user_id'])
     else:
         # TODO: Error handling?
         return redirect('/game/search')
