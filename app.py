@@ -1,3 +1,5 @@
+from email.policy import default
+
 from flask import Flask, render_template, request, redirect, session
 from helpers import has_number, has_special, has_uppercase
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -146,7 +148,7 @@ def game_search():
                            "ON CONFLICT(igdb_game_id) DO NOTHING;",
                            (game['id'], game['rating'], game['name'], game['img_id']))
             db.commit()
-        return render_template('search_game.html', data=data, request=game_name)
+        return render_template('search_game.html', data=data, game_name=game_name)
 
 
 @app.route('/game/<game_id>/status', methods=['POST'])

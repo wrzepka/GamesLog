@@ -2,9 +2,9 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if session.get("user_id")%}
-<h1 class="my-4 text-center">Welcome {{session['username']}}!</h1>
+<h1 class="mb-4 text-center">Welcome {{session['username']}}!</h1>
 {% else %}
-<h1 class="my-4 text-center">Welcome to our site!</h1>
+<h1 class="mb-4 text-center">Welcome to our site!</h1>
 {% endif %}
 <div class="container">
     <div class="row g-4">

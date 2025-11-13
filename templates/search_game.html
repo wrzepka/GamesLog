@@ -2,17 +2,20 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if session.get("user_id")%}
-<form action="/game/search" method="post" class="d-flex flex-column align-items-center"
-      style="max-width:420px; margin:0 auto;">
-    <div class="my-3 w-100">
-        <label for="game_name" class="form-label fs-2">Game name:</label>
-        <input type="text" class="form-control" name="game_name" id="game_name">
+<form action="/game/search" method="post" class="mx-auto" style="max-width:420px; margin:0 auto;">
+    <div class="mb-3 row justify-content-center">
+        <label for="game_name" class="form-label fs-2 col-12 text-center">Game name:</label>
+        <div class="col-10 col-md-12 mx-auto">
+            <input type="text" class="form-control" name="game_name" id="game_name" required>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
 </form>
 {% if data %}
 <hr>
-<h1 class="mb-5 text-center">Results for '{{request}}'</h1>
+<h1 class="mb-4 text-center">Results for '{{game_name}}'</h1>
 <div class="container">
     <div class="row g-4">
         {% for game in data %}
@@ -47,6 +50,11 @@
         {% endfor %}
     </div>
 </div>
+{% else %}
+{% if game_name != NULL %}
+<hr>
+<h1 class="mb-4 text-center">No results for '{{game_name}}'</h1>
+{% endif %}
 {% endif %}
 {% else %}
 <h1 class="mb-4">Please login to search games</h1>
