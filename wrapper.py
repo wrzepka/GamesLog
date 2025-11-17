@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 import requests
 import json
 
+from helpers import summarize_games
+
 load_dotenv()
 IGDB_CLIENT = os.getenv("IGDB_CLIENT")
 IGDB_SECRET = os.getenv("IGDB_SECRET")
@@ -40,26 +42,7 @@ def top10_games():
     )
 
     games_json = json.loads(games_bytes.decode('utf-8'))
-    data = []
-
-    # TODO:Refactor that
-    for game in games_json:
-        rating = game.get('total_rating') if game.get('total_rating') is not None else None
-        cover = game.get('cover') if game.get('cover') is not None else None
-
-        img_id = None
-        if cover is not None:
-            img_id = cover.get('image_id')
-
-        if rating is not None:
-            rating = int(round(rating))
-
-        data.append({
-            'id': game['id'],
-            'name': game['name'],
-            'rating': rating,
-            'img_id': img_id
-        })
+    data = summarize_games(games_json)
 
     return data
 
@@ -75,25 +58,6 @@ def find_games(name):
     )
 
     games_json = json.loads(games_bytes.decode('utf-8'))
-    data = []
-
-    # TODO:Refactor that
-    for game in games_json:
-        rating = game.get('total_rating') if game.get('total_rating') is not None else None
-        cover = game.get('cover') if game.get('cover') is not None else None
-
-        img_id = None
-        if cover is not None:
-            img_id = cover.get('image_id')
-
-        if rating is not None:
-            rating = int(round(rating))
-
-        data.append({
-            'id': game['id'],
-            'name': game['name'],
-            'rating': rating,
-            'img_id': img_id
-        })
+    data = summarize_games(games_json)
 
     return data
