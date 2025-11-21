@@ -2,54 +2,54 @@
 {% block title %}Index{% endblock %}
 {% block content %}
 {% if session.get("user_id")%}
-<!--TODO: Change size of the accordion-->
-<div class="accordion" id="accordionExample">
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                    aria-expanded="true" aria-controls="collapseOne">
-                List of wishlisted games
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                {% if wishlisted %}
-                {% for game in wishlisted %}
-                <div class="card mb-2" style="width: 18rem; height: 25rem;">
-                    <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg"
-                         class="card-img-top"
-                         alt="{{game.name}} cover">
-                    <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
-                        <h4 class="card-title flex-grow-1">{{game.name}}</h4>
-                    </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <strong>Your list is empty :/</strong>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                List of currently playing games
-            </button>
-        </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
+<div class="container">
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                    List of wishlisted games
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    {% if playing %}
-                    {% for game in playing %}
-                    <div class="card mb-2" style="width: 18rem; height: 25rem;">
-                        <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg"
-                             class="card-img-top"
-                             alt="{{game.name}} cover">
-                        <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
-                            <h4 class="card-title flex-grow-1">{{game.name}}</h4>
+                    {% if wishlisted %}
+                    {% for game in wishlisted %}
+                    <div class="container h-100">
+                        <div class="row row-cols-auto h-100">
+                            <div class="col">
+                                <!--TODO: repair img-->
+                                <img src="https://images.igdb.com/igdb/image/upload/t_cover_big/{{game.img_id}}.jpg"
+                                     class="img-thumbnail"
+                                     style="object-fit:cover;"
+                                     alt="{{game.name}}-cover">
+                            </div>
+                            <!--TODO: make it mobile friendly                            -->
+                            <div class="col-6">
+                                <div class="row text-center"><h3>{{game.name}}</h3></div>
+                                <!--TODO: your desc with text truncation                                -->
+                                <div class="row-6"><span>YOUR DESC TODO:</span></div>
+                                <!--TODO: space for user's review-->
+                                <div class="row-6"><span>REVIEW: LOREM IPSUMLOREM IPSUMLOREM IPSUMLOREM IPSUMLOREM IPSUMLOREM IPSUMLOREM IPSUMLOREM IPSUMLOREM IPSUMLOREM IPSUM</span>
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col">Hours played: {{game.hours_played}}</div>
+                                    <div class="col">Your rating: {{game.rating}}</div>
+                                    <div class="col">IGDB rating: {{game.igdb_rating}}</div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row">Here will be option to add review</div>
+                                <div class="row">Here will be option to add your rating</div>
+                                <div class="row">Here will be option to set your hours</div>
+                                <div class="row text-center">
+                                    <div class="col">move to finished</div>
+                                    <div class="col">move to playing</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <hr>
                     {% endfor %}
                     {% else %}
                     <strong>Your list is empty :/</strong>
@@ -57,31 +57,59 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                List of finished games
-            </button>
-        </h2>
-        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    List of currently playing games
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    {% if finished %}
-                    {% for game in finished %}
-                    <div class="card mb-2" style="width: 18rem; height: 25rem;">
-                        <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg"
-                             class="card-img-top"
-                             alt="{{game.name}} cover">
-                        <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
-                            <h4 class="card-title flex-grow-1">{{game.name}}</h4>
+                    <div class="accordion-body">
+                        {% if playing %}
+                        {% for game in playing %}
+                        <div class="card mb-2" style="width: 18rem; height: 25rem;">
+                            <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg"
+                                 class="card-img-top"
+                                 alt="{{game.name}} cover">
+                            <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
+                                <h4 class="card-title flex-grow-1">{{game.name}}</h4>
+                            </div>
                         </div>
+                        {% endfor %}
+                        {% else %}
+                        <strong>Your list is empty :/</strong>
+                        {% endif %}
                     </div>
-                    {% endfor %}
-                    {% else %}
-                    <strong>Your list is empty :/</strong>
-                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    List of finished games
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="accordion-body">
+                        {% if finished %}
+                        {% for game in finished %}
+                        <div class="card mb-2" style="width: 18rem; height: 25rem;">
+                            <img src="https://images.igdb.com/igdb/image/upload/t_logo_med_2x/{{game.img_id}}.jpg"
+                                 class="card-img-top"
+                                 alt="{{game.name}} cover">
+                            <div class="card-body flex-grow-1 text-center d-flex flex-column align-items-center justify-content-center">
+                                <h4 class="card-title flex-grow-1">{{game.name}}</h4>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <strong>Your list is empty :/</strong>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
